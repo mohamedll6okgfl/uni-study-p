@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-page:        #f8fafc; /* surface.50 */
+    --bg-card:        #ffffff;
+    --bg-sidebar:     #f1f5f9; /* surface.100 */
+    --border:         #e2e8f0; /* surface.200 */
+    --text-primary:   #0f172a; /* surface.900 */
+    --text-secondary: #64748b; /* surface.500 */
+    --text-muted:     #94a3b8; /* surface.400 */
+    --accent:         #6366f1; /* brand.500 */
+    --accent-hover:   #4f46e5; /* brand.600 */
+    --transition:     150ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  [data-theme="dark"] {
+    --bg-page:        #0f172a; /* surface.900 */
+    --bg-card:        #1e293b; /* surface.800 */
+    --bg-sidebar:     #020617; /* surface.950 */
+    --border:         #334155; /* surface.700 */
+    --text-primary:   #f8fafc; /* surface.50 */
+    --text-secondary: #94a3b8; /* surface.400 */
+    --text-muted:     #64748b; /* surface.500 */
+    --accent:         #818cf8; /* brand.400 */
+    --accent-hover:   #6366f1; /* brand.500 */
+  }
+
+  body {
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    font-family: theme('fontFamily.sans');
+    transition: background-color var(--transition), color var(--transition);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Masonry columns for Scratchpad */
+.note-grid {
+  column-count: 1;
+  column-gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .note-grid {
+    column-count: 2;
+  }
+}
+
+@media (min-width: 1024px) {
+  .note-grid {
+    column-count: 3;
+  }
+}
+
+@media (min-width: 1280px) {
+  .note-grid {
+    column-count: 4;
+  }
+}
+
+.note-card {
+  break-inside: avoid;
+  margin-bottom: 1rem;
+}
+
+/* Glassmorphism utility */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] .glass {
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
