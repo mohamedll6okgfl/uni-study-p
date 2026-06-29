@@ -100,16 +100,10 @@ export const Kanban: React.FC = () => {
   };
 
   const handleDeleteCard = (id: string) => {
-    const a = data.assignments[id];
-    if (!a) return;
-
-    const confirmed = window.confirm(`Delete assignment "${a.title}"?`);
-    if (confirmed) {
-      dispatch({
-        type: 'DELETE_ASSIGNMENT',
-        payload: { id },
-      });
-    }
+    dispatch({
+      type: 'DELETE_ASSIGNMENT',
+      payload: { id },
+    });
   };
 
   // Filter handlers

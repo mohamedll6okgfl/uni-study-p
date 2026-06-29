@@ -55,11 +55,7 @@ export const Scratchpad: React.FC = () => {
   };
 
   const handleDeleteNote = (noteId: string) => {
-    const note = data.notes[noteId];
-    if (!note) return;
-    if (window.confirm(`Delete note "${note.title}"?`)) {
-      dispatch({ type: 'DELETE_NOTE', payload: { id: noteId } });
-    }
+    dispatch({ type: 'DELETE_NOTE', payload: { id: noteId } });
   };
 
   const COLOR_FILTERS: { value: NoteColor | 'all'; label: string; dotClass: string }[] = [

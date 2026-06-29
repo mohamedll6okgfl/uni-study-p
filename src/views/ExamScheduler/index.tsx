@@ -77,16 +77,10 @@ export const ExamScheduler: React.FC = () => {
   };
 
   const handleDeleteExam = (id: string) => {
-    const e = data.exams[id];
-    if (!e) return;
-
-    const confirmed = window.confirm(`Remove exam "${e.title}" from scheduler?`);
-    if (confirmed) {
-      dispatch({
-        type: 'DELETE_EXAM',
-        payload: { id },
-      });
-    }
+    dispatch({
+      type: 'DELETE_EXAM',
+      payload: { id },
+    });
   };
 
   return (

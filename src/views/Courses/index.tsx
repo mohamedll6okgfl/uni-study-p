@@ -29,19 +29,10 @@ export const Courses: React.FC = () => {
   };
 
   const handleDeleteCourse = (courseId: string) => {
-    const course = data.courses[courseId];
-    if (!course) return;
-
-    const confirmed = window.confirm(
-      `Are you sure you want to delete ${course.code} — ${course.name}?\n\nWARNING: This will delete ALL assignments, exams, and notes linked to this course!`
-    );
-
-    if (confirmed) {
-      dispatch({
-        type: 'DELETE_COURSE',
-        payload: { id: courseId },
-      });
-    }
+    dispatch({
+      type: 'DELETE_COURSE',
+      payload: { id: courseId },
+    });
   };
 
   const handleOpenDetail = (courseId: string) => {
