@@ -129,7 +129,8 @@ export const Modal: React.FC<ModalProps> = ({
         ref={modalRef}
         tabIndex={-1}
         className={`
-          relative bg-[--bg-card] border border-[--border] rounded-2xl shadow-card-hover 
+          relative bg-[--bg-card] border border-[--border] rounded-2xl
+          shadow-[0_20px_60px_rgba(0,0,0,0.5),0_0_0_1px_rgba(52,211,153,0.07)]
           transform transition-all duration-200 ease-out scale-100 opacity-100
           outline-none overflow-hidden max-h-[90vh] flex flex-col
           ${sizeClasses[size]}
@@ -149,7 +150,7 @@ export const Modal: React.FC<ModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-[--text-muted] hover:text-[--text-primary] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="p-1 rounded-lg text-[--text-muted] hover:text-[--text-primary] hover:bg-white/5 transition-colors"
             aria-label="Close modal"
           >
             <svg
@@ -176,7 +177,7 @@ export const Modal: React.FC<ModalProps> = ({
 
         {/* Footer */}
         {footer && (
-          <div className="flex items-center justify-end gap-3 p-5 border-t border-[--border] bg-slate-50 dark:bg-slate-900/30">
+          <div className="flex items-center justify-end gap-3 p-5 border-t border-[--border] bg-[#111712]/60">
             {footer}
           </div>
         )}

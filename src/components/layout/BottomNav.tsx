@@ -12,7 +12,7 @@ export const BottomNav: React.FC = () => {
           className={({ isActive }) => `
             flex flex-col items-center justify-center flex-1 h-full py-1 text-[10px] font-semibold transition-all duration-150
             ${isActive
-              ? 'text-brand-500'
+              ? 'text-brand-400'
               : 'text-[--text-secondary] hover:text-[--text-primary]'
             }
           `}

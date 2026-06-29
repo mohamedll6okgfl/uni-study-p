@@ -193,10 +193,10 @@ export const GlobalSearch: React.FC = () => {
   return (
     <div className="fixed inset-0 z-[60] flex items-start justify-center pt-[10vh] px-4">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setIsOpen(false)} />
+      <div className="absolute inset-0 bg-[#0a0f0b]/70 backdrop-blur-sm" onClick={() => setIsOpen(false)} />
 
       {/* Palette Panel */}
-      <div className="relative w-full max-w-xl bg-[--bg-card] border border-[--border] rounded-2xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.35)] overflow-hidden z-10 animate-[fadeIn_0.15s_ease-out]">
+      <div className="relative w-full max-w-xl bg-[--bg-card] border border-[--border] rounded-2xl shadow-[0_25px_60px_rgba(0,0,0,0.6),0_0_0_1px_rgba(52,211,153,0.08)] overflow-hidden z-10 animate-[fadeIn_0.15s_ease-out]">
         {/* Search Input */}
         <div className="flex items-center gap-3 px-4 py-3.5 border-b border-[--border]">
           <Search className="w-5 h-5 text-[--text-muted] shrink-0" />
@@ -217,7 +217,7 @@ export const GlobalSearch: React.FC = () => {
               <X className="w-4 h-4" />
             </button>
           )}
-          <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 border border-[--border] rounded text-[10px] font-mono text-[--text-secondary] shrink-0">ESC</kbd>
+          <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 bg-white/5 border border-[--border] rounded text-[10px] font-mono text-brand-400 shrink-0">ESC</kbd>
         </div>
 
         {/* Results */}
@@ -242,11 +242,11 @@ export const GlobalSearch: React.FC = () => {
                         onMouseEnter={() => setActiveIdx(idx)}
                         className={`
                           w-full flex items-center gap-3 px-4 py-3 text-left transition-colors
-                          ${isActive ? 'bg-brand-50 dark:bg-brand-950/20' : 'hover:bg-slate-50 dark:hover:bg-slate-800/40'}
+                          ${isActive ? 'bg-brand-950/25 dark:bg-brand-950/25 border-l-2 border-brand-500' : 'hover:bg-white/3 dark:hover:bg-white/3 border-l-2 border-transparent'}
                         `}
                       >
                         {/* Icon */}
-                        <div className={`flex items-center justify-center w-8 h-8 rounded-xl shrink-0 ${courseColors?.bg || 'bg-slate-100 dark:bg-slate-800'}`}>
+                        <div className={`flex items-center justify-center w-8 h-8 rounded-xl shrink-0 ${courseColors?.bg || 'bg-white/5 border border-[--border]'}`}>
                           {result.icon}
                         </div>
 
@@ -257,7 +257,7 @@ export const GlobalSearch: React.FC = () => {
                         </div>
 
                         {/* Type badge */}
-                        <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[--text-secondary] shrink-0 capitalize">
+                        <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/5 border border-[--border] text-brand-400/80 shrink-0 capitalize">
                           {result.type}
                         </span>
                       </button>
@@ -277,11 +277,11 @@ export const GlobalSearch: React.FC = () => {
               Search across all your <strong>assignments</strong>, <strong>exams</strong>, <strong>courses</strong>, and <strong>notes</strong>.
             </p>
             <div className="flex items-center justify-center gap-2 text-[10px] text-[--text-muted]">
-              <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 border border-[--border] rounded font-mono">↑ ↓</kbd>
+              <kbd className="px-1.5 py-0.5 bg-white/5 border border-[--border] rounded font-mono text-brand-400">↑ ↓</kbd>
               <span>navigate</span>
-              <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 border border-[--border] rounded font-mono">↵</kbd>
+              <kbd className="px-1.5 py-0.5 bg-white/5 border border-[--border] rounded font-mono text-brand-400">↵</kbd>
               <span>select</span>
-              <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 border border-[--border] rounded font-mono">ESC</kbd>
+              <kbd className="px-1.5 py-0.5 bg-white/5 border border-[--border] rounded font-mono text-brand-400">ESC</kbd>
               <span>close</span>
             </div>
           </div>

@@ -13,24 +13,41 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary:   'bg-brand-500 text-white hover:bg-brand-600 active:bg-brand-700 focus-visible:ring-brand-500',
-  secondary: 'bg-surface-100 text-surface-700 hover:bg-surface-200 dark:bg-surface-700 dark:text-surface-100 dark:hover:bg-surface-600',
-  ghost:     'bg-transparent text-surface-600 hover:bg-surface-100 dark:text-surface-300 dark:hover:bg-surface-800',
-  danger:    'bg-danger-500 text-white hover:bg-red-600 active:bg-red-700 focus-visible:ring-danger-500',
+  // Emerald Glow CTA — the signature Nordic Forest action button
+  primary: [
+    'bg-brand-500 text-[#141a16] font-bold',
+    'hover:bg-brand-400 active:bg-brand-600',
+    'shadow-md shadow-brand-500/20 hover:shadow-emerald-glow',
+    'focus-visible:ring-brand-400',
+    'transition-all duration-200',
+  ].join(' '),
+  secondary: [
+    'bg-surface-100 text-surface-700 hover:bg-surface-200 border border-surface-200',
+    'dark:bg-surface-700/60 dark:text-brand-200 dark:border-brand-900/30',
+    'dark:hover:bg-surface-700 dark:hover:border-brand-700/40',
+  ].join(' '),
+  ghost: [
+    'bg-transparent text-surface-500 hover:bg-surface-100',
+    'dark:text-brand-300 dark:hover:bg-white/5 dark:hover:text-brand-200',
+  ].join(' '),
+  danger: [
+    'bg-danger-500 text-white hover:bg-red-600 active:bg-red-700',
+    'shadow-sm shadow-red-500/20 focus-visible:ring-danger-500',
+  ].join(' '),
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
-  xs: 'h-7  px-2.5 text-xs  gap-1',
-  sm: 'h-8  px-3   text-sm  gap-1.5',
-  md: 'h-10 px-4   text-sm  gap-2',
+  xs: 'h-7  px-2.5 text-xs   gap-1',
+  sm: 'h-8  px-3.5 text-sm   gap-1.5',
+  md: 'h-10 px-4   text-sm   gap-2',
   lg: 'h-11 px-5   text-base gap-2',
 };
 
-const baseClasses = 
-  'inline-flex items-center justify-center font-medium rounded-lg ' +
-  'transition-colors duration-150 focus-visible:outline-none ' +
+const baseClasses =
+  'inline-flex items-center justify-center font-semibold rounded-lg ' +
+  'transition-all duration-200 focus-visible:outline-none ' +
   'focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[--bg-page] ' +
-  'disabled:opacity-50 disabled:cursor-not-allowed select-none';
+  'disabled:opacity-40 disabled:cursor-not-allowed select-none';
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (

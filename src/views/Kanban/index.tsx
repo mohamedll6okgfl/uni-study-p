@@ -200,10 +200,10 @@ export const Kanban: React.FC = () => {
                 key={c.id}
                 onClick={() => handleCourseFilterChange(c.id)}
                 className={`
-                  px-2.5 py-1 rounded-full text-3xs font-bold uppercase tracking-wider border transition-all
+                  px-2.5 py-1 rounded-full text-3xs font-bold uppercase tracking-wider border transition-all duration-150
                   ${isSelected
-                    ? 'bg-brand-500 text-white border-brand-500 shadow-sm'
-                    : 'bg-slate-50 dark:bg-slate-800/40 border-[--border] text-[--text-secondary] hover:bg-slate-100 dark:hover:bg-slate-850'
+                    ? 'bg-brand-500 text-[#141a16] border-brand-500 shadow-sm shadow-brand-500/25'
+                    : 'bg-white/5 border-[--border] text-[--text-secondary] hover:border-brand-700/40 hover:text-brand-300'
                   }
                 `}
               >
@@ -242,7 +242,7 @@ export const Kanban: React.FC = () => {
         {isFiltered && (
           <button
             onClick={clearFilters}
-            className="text-[10px] font-bold text-brand-500 hover:text-brand-600 hover:underline shrink-0"
+            className="text-[10px] font-bold text-brand-400 hover:text-brand-300 hover:underline shrink-0 transition-colors"
           >
             Clear Filters
           </button>

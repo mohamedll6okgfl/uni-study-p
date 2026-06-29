@@ -13,7 +13,7 @@ export interface ProgressBarProps {
 }
 
 const colorClasses: Record<ProgressColor, string> = {
-  brand:   'bg-brand-500 dark:bg-brand-400',
+  brand:   'bg-brand-500 dark:bg-brand-400 dark:shadow-[0_0_6px_rgba(52,211,153,0.3)]',
   success: 'bg-success-500',
   warning: 'bg-warning-500',
   danger:  'bg-danger-500',
@@ -41,7 +41,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
     <div className="flex items-center w-full gap-3 select-none">
       <div
         className={`
-          flex-1 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden
+          flex-1 bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden border dark:border-brand-900/20
           ${heightClasses[size]}
         `}
         role="progressbar"

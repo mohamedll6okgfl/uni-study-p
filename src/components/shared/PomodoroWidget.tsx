@@ -63,7 +63,7 @@ export const PomodoroWidget: React.FC = () => {
         {/* Skip button */}
         <button
           onClick={skip}
-          className="text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-[--text-primary] hover:bg-slate-200 transition-colors"
+          className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-white/5 text-brand-400 hover:text-brand-300 hover:bg-white/10 transition-colors border border-brand-900/30"
           title="Skip to next phase"
         >
           Skip
@@ -101,7 +101,7 @@ export const PomodoroWidget: React.FC = () => {
           {isPaused ? (
             <button
               onClick={resume}
-              className="p-2 bg-brand-500 text-white rounded-xl hover:bg-brand-600 transition-colors shadow-sm shadow-brand-500/10"
+              className="p-2 bg-brand-500 text-[#141a16] rounded-xl hover:bg-brand-400 transition-all shadow-sm shadow-brand-500/20 hover:shadow-emerald-glow"
               aria-label="Resume timer"
             >
               <Play className="w-4 h-4" />
@@ -109,7 +109,7 @@ export const PomodoroWidget: React.FC = () => {
           ) : (
             <button
               onClick={pause}
-              className="p-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+              className="p-2 bg-white/5 text-brand-400 rounded-xl hover:bg-white/10 hover:text-brand-300 border border-brand-900/30 transition-colors"
               aria-label="Pause timer"
             >
               <Pause className="w-4 h-4" />

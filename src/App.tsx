@@ -11,15 +11,16 @@ const Calendar     = lazy(() => import('./views/Calendar'));
 const Courses      = lazy(() => import('./views/Courses'));
 const Scratchpad   = lazy(() => import('./views/Scratchpad'));
 
-/** Full-page animated skeleton while a lazy chunk is loading */
 const PageLoader: React.FC = () => (
   <div className="flex-1 flex items-center justify-center h-full">
     <div className="flex flex-col items-center gap-4">
       <div className="relative w-10 h-10">
-        <div className="absolute inset-0 rounded-full border-2 border-brand-200 dark:border-brand-900" />
-        <div className="absolute inset-0 rounded-full border-t-2 border-brand-500 animate-spin" />
+        <div className="absolute inset-0 rounded-full border-2 border-brand-900/40" />
+        <div className="absolute inset-0 rounded-full border-t-2 border-brand-400 animate-spin" />
+        {/* Glow center dot */}
+        <div className="absolute inset-0 m-auto w-2 h-2 rounded-full bg-brand-500 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
       </div>
-      <p className="text-xs font-semibold text-[--text-muted] animate-pulse tracking-wide">Loading…</p>
+      <p className="text-xs font-semibold text-brand-400/70 animate-pulse tracking-widest uppercase">Loading…</p>
     </div>
   </div>
 );

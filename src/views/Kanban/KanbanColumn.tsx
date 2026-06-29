@@ -30,8 +30,10 @@ export const KanbanColumn: React.FC<KanbanColumnProps> = ({
     <div
       ref={setNodeRef}
       className={`
-        flex flex-col flex-1 min-w-[260px] max-w-[340px] bg-slate-50/50 dark:bg-slate-900/10 border border-[--border] rounded-2xl p-4 transition-all duration-150
-        ${isOver ? 'bg-slate-100/80 dark:bg-slate-800/20 border-brand-400 dark:border-brand-850' : ''}
+        flex flex-col flex-1 min-w-[260px] max-w-[340px]
+        bg-[--bg-card]/40 dark:bg-black/20
+        border border-[--border] rounded-2xl p-4 transition-all duration-150
+        ${isOver ? 'dark:bg-brand-950/10 border-brand-500/30 dark:border-brand-700/50' : ''}
       `}
     >
       {/* Column Header */}
@@ -44,7 +46,7 @@ export const KanbanColumn: React.FC<KanbanColumnProps> = ({
             {label}
           </h3>
         </div>
-        <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[--text-secondary] tabular-nums shadow-sm">
+        <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-white/5 dark:bg-white/5 text-[--text-secondary] tabular-nums border border-[--border]">
           {assignments.length}
         </span>
       </div>

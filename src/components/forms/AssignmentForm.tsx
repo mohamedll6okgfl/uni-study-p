@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { BookOpen } from 'lucide-react';
 import { usePlannerData } from '../../context/PlannerContext';
 import type { Assignment, Priority, Status } from '../../types';
 import { generateId } from '../../utils/generate';
@@ -26,37 +27,48 @@ export const AssignmentForm: React.FC<AssignmentFormProps> = ({ isOpen, onClose,
   
   const [error, setError] = useState('');
 
-  const coursesList = Object.values(data.courses).filter(c => !c.isArchived);
+  // Memoize the courses list so its reference is stable across renders.
+  // This is CRITICAL: if coursesList were recomputed on every render (via Object.values),
+  // it would be a new array reference each time, causing the useEffect below to fire
+  // on every keystroke and reset all form fields — making inputs appear frozen.
+  const coursesList = useMemo(
+    () => Object.values(data.courses).filter(c => !c.isArchived),
+    [data.courses]
+  );
 
-  // Prefill if editing
+  // Prefill if editing, or reset when opening for a new item.
+  // We deliberately exclude `coursesList` from deps — it is only needed to
+  // pick the initial courseId on open, not to re-run whenever courses change.
   useEffect(() => {
-    if (isOpen) {
-      if (assignmentId && data.assignments[assignmentId]) {
-        const a = data.assignments[assignmentId];
-        setTitle(a.title);
-        setDescription(a.description);
-        setCourseId(a.courseId);
-        setDueDate(a.dueDate);
-        setDueTime(a.dueTime);
-        setPriority(a.priority);
-        setStatus(a.status);
-        setEstimatedHrs(a.estimatedHrs);
-        setTagsInput(a.tags.join(', '));
-      } else {
-        // Reset form
-        setTitle('');
-        setDescription('');
-        setCourseId(coursesList[0]?.id || '');
-        setDueDate(new Date().toISOString().slice(0, 10));
-        setDueTime('23:59');
-        setPriority('medium');
-        setStatus('todo');
-        setEstimatedHrs(2);
-        setTagsInput('');
-      }
-      setError('');
+    if (!isOpen) return;
+
+    if (assignmentId && data.assignments[assignmentId]) {
+      const a = data.assignments[assignmentId];
+      setTitle(a.title);
+      setDescription(a.description ?? '');
+      setCourseId(a.courseId);
+      setDueDate(a.dueDate);
+      setDueTime(a.dueTime ?? '23:59');
+      setPriority(a.priority);
+      setStatus(a.status);
+      setEstimatedHrs(a.estimatedHrs ?? 2);
+      setTagsInput(a.tags?.join(', ') ?? '');
+    } else {
+      // Reset form — snapshot the first available courseId at open-time
+      const firstCourseId = Object.values(data.courses).find(c => !c.isArchived)?.id ?? '';
+      setTitle('');
+      setDescription('');
+      setCourseId(firstCourseId);
+      setDueDate(new Date().toISOString().slice(0, 10));
+      setDueTime('23:59');
+      setPriority('medium');
+      setStatus('todo');
+      setEstimatedHrs(2);
+      setTagsInput('');
     }
-  }, [isOpen, assignmentId, data.assignments, coursesList]);
+    setError('');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, assignmentId]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,6 +126,9 @@ export const AssignmentForm: React.FC<AssignmentFormProps> = ({ isOpen, onClose,
     onClose();
   };
 
+  // Guard: if no courses exist at all, show a friendly blocker instead of a broken form
+  const hasCourses = coursesList.length > 0;
+
   return (
     <Modal
       isOpen={isOpen}
@@ -122,19 +137,40 @@ export const AssignmentForm: React.FC<AssignmentFormProps> = ({ isOpen, onClose,
       description="Track details, due date, priority, and focus time for this assignment."
       size="lg"
       footer={
-        <>
+        hasCourses ? (
+          <>
+            <Button variant="ghost" size="sm" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button variant="primary" size="sm" onClick={handleSubmit}>
+              {assignmentId ? 'Save Changes' : 'Add Assignment'}
+            </Button>
+          </>
+        ) : (
           <Button variant="ghost" size="sm" onClick={onClose}>
-            Cancel
+            Close
           </Button>
-          <Button variant="primary" size="sm" onClick={handleSubmit}>
-            {assignmentId ? 'Save Changes' : 'Add Assignment'}
-          </Button>
-        </>
+        )
       }
     >
+      {/* No-course empty state: renders instead of the broken form */}
+      {!hasCourses ? (
+        <div className="flex flex-col items-center gap-4 py-8 text-center">
+          <div className="w-14 h-14 rounded-2xl bg-brand-50 dark:bg-brand-950/30 flex items-center justify-center">
+            <BookOpen className="w-7 h-7 text-brand-500" />
+          </div>
+          <div>
+            <p className="text-sm font-bold text-[--text-primary] mb-1">No courses yet!</p>
+            <p className="text-xs text-[--text-secondary] max-w-xs">
+              You need to create at least one course before you can add assignments.
+              Head over to the <strong>Courses</strong> page to get started.
+            </p>
+          </div>
+        </div>
+      ) : (
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
-          <div className="p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 rounded-xl text-xs font-semibold animate-shake">
+          <div className="p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 rounded-xl text-xs font-semibold">
             {error}
           </div>
         )}
@@ -150,7 +186,7 @@ export const AssignmentForm: React.FC<AssignmentFormProps> = ({ isOpen, onClose,
             onChange={e => setTitle(e.target.value)}
             placeholder="e.g. Problem Set 5"
             maxLength={120}
-            className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm font-medium"
+            className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-2 focus:ring-1 focus:ring-brand-400/40 focus:border-brand-400 transition-all duration-200 text-sm font-medium"
             required
             autoFocus
           />
@@ -166,7 +202,7 @@ export const AssignmentForm: React.FC<AssignmentFormProps> = ({ isOpen, onClose,
             onChange={e => setDescription(e.target.value)}
             placeholder="Outline instructions, page limits, or textbook numbers..."
             rows={3}
-            className="w-full p-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm resize-none"
+            className="w-full p-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-2 focus:ring-1 focus:ring-brand-400/40 focus:border-brand-400 transition-all duration-200 text-sm resize-none"
           />
         </div>
 
@@ -184,7 +220,7 @@ export const AssignmentForm: React.FC<AssignmentFormProps> = ({ isOpen, onClose,
               <select
                 value={courseId}
                 onChange={e => setCourseId(e.target.value)}
-                className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm cursor-pointer"
+                className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-2 focus:ring-1 focus:ring-brand-400/40 focus:border-brand-400 transition-all duration-200 text-sm cursor-pointer"
                 required
               >
                 {coursesList.map(c => (
@@ -206,7 +242,7 @@ export const AssignmentForm: React.FC<AssignmentFormProps> = ({ isOpen, onClose,
               value={tagsInput}
               onChange={e => setTagsInput(e.target.value)}
               placeholder="e.g. homework, essay, group"
-              className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm"
+              className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-2 focus:ring-1 focus:ring-brand-400/40 focus:border-brand-400 transition-all duration-200 text-sm"
             />
           </div>
 
@@ -219,7 +255,7 @@ export const AssignmentForm: React.FC<AssignmentFormProps> = ({ isOpen, onClose,
               type="date"
               value={dueDate}
               onChange={e => setDueDate(e.target.value)}
-              className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm cursor-pointer"
+              className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-2 focus:ring-1 focus:ring-brand-400/40 focus:border-brand-400 transition-all duration-200 text-sm cursor-pointer"
               required
             />
           </div>
@@ -233,7 +269,7 @@ export const AssignmentForm: React.FC<AssignmentFormProps> = ({ isOpen, onClose,
               type="time"
               value={dueTime}
               onChange={e => setDueTime(e.target.value)}
-              className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm cursor-pointer"
+              className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-2 focus:ring-1 focus:ring-brand-400/40 focus:border-brand-400 transition-all duration-200 text-sm cursor-pointer"
             />
           </div>
 
@@ -245,7 +281,7 @@ export const AssignmentForm: React.FC<AssignmentFormProps> = ({ isOpen, onClose,
             <select
               value={priority}
               onChange={e => setPriority(e.target.value as Priority)}
-              className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm cursor-pointer"
+              className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-2 focus:ring-1 focus:ring-brand-400/40 focus:border-brand-400 transition-all duration-200 text-sm cursor-pointer"
             >
               <option value="low">Low</option>
               <option value="medium">Medium</option>
@@ -262,7 +298,7 @@ export const AssignmentForm: React.FC<AssignmentFormProps> = ({ isOpen, onClose,
             <select
               value={status}
               onChange={e => setStatus(e.target.value as Status)}
-              className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm cursor-pointer"
+              className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-2 focus:ring-1 focus:ring-brand-400/40 focus:border-brand-400 transition-all duration-200 text-sm cursor-pointer"
             >
               <option value="todo">To Do</option>
               <option value="in_progress">In Progress</option>
@@ -283,11 +319,12 @@ export const AssignmentForm: React.FC<AssignmentFormProps> = ({ isOpen, onClose,
               min={0.25}
               max={100}
               step={0.25}
-              className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm"
+              className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-2 focus:ring-1 focus:ring-brand-400/40 focus:border-brand-400 transition-all duration-200 text-sm"
             />
           </div>
         </div>
       </form>
+      )}
     </Modal>
   );
 };

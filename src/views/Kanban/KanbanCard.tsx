@@ -49,8 +49,8 @@ export const KanbanCard: React.FC<KanbanCardProps> = ({
       <Card
         padding="sm"
         className={`
-          flex flex-col gap-3 hover:border-brand-300 dark:hover:border-brand-800 transition-colors relative group
-          ${isCurrentlyTicking ? 'border-brand-400 dark:border-brand-700 ring-2 ring-brand-500/20' : ''}
+          flex flex-col gap-3 hover:border-brand-500/30 dark:hover:border-brand-700/50 transition-colors relative group
+          ${isCurrentlyTicking ? 'border-brand-500/40 dark:border-brand-700/60 ring-2 ring-brand-500/15 glow-pulse' : ''}
         `}
       >
         {/* Card Header: Course Code & Edit/Delete */}
@@ -72,7 +72,7 @@ export const KanbanCard: React.FC<KanbanCardProps> = ({
                 e.stopPropagation();
                 onEdit();
               }}
-              className="p-1 rounded text-[--text-secondary] hover:text-[--text-primary] hover:bg-slate-150 dark:hover:bg-slate-800 transition-colors"
+              className="p-1 rounded text-[--text-secondary] hover:text-brand-400 hover:bg-white/5 transition-colors"
               title="Edit Assignment"
             >
               <Edit2 className="w-3 h-3" />
@@ -128,8 +128,8 @@ export const KanbanCard: React.FC<KanbanCardProps> = ({
               className={`
                 flex items-center gap-1 px-2 py-1 rounded-lg border border-[--border] font-semibold transition-all
                 ${isCurrentlyTicking
-                  ? 'bg-brand-50 border-brand-200 text-brand-500 dark:bg-brand-950/20 dark:border-brand-900/30'
-                  : 'hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-brand-500 hover:border-brand-200'
+                  ? 'bg-brand-950/30 border-brand-700/40 text-brand-400'
+                  : 'hover:bg-brand-950/20 dark:hover:bg-brand-950/20 hover:text-brand-400 hover:border-brand-700/40'
                 }
               `}
               title={isCurrentlyTicking ? 'Focus session active' : 'Start Focus Session'}

@@ -23,11 +23,12 @@ export const SidebarNav: React.FC = () => {
       {/* Brand Header */}
       <div className="flex items-center justify-between h-16 px-4 border-b border-[--border]">
         <div className="flex items-center gap-3 overflow-hidden">
-          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-brand-500 text-white shrink-0 shadow-md shadow-brand-500/10">
+          {/* Glowing amber icon with hover scale effect */}
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-amber-500/10 text-amber-300 border border-amber-500/20 shrink-0 shadow-sm transition-transform duration-200 hover:scale-105 cursor-pointer">
             <GraduationCap className="w-5 h-5" />
           </div>
           {!collapsed && (
-            <span className="font-bold text-base text-[--text-primary] tracking-tight whitespace-nowrap animate-[fadeIn_0.2s_ease-out]">
+            <span className="font-bold text-base text-amber-300 tracking-tight whitespace-nowrap animate-[fadeIn_0.2s_ease-out] hover:text-amber-200 transition-colors duration-200">
               UniPlan
             </span>
           )}
@@ -43,14 +44,14 @@ export const SidebarNav: React.FC = () => {
             key={item.path}
             to={item.path}
             className={({ isActive }) => `
-              flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 group relative
+              flex items-center gap-3 py-2.5 rounded-xl text-sm transition-all duration-200 group relative
               ${isActive
-                ? 'bg-brand-500 text-white shadow-md shadow-brand-500/20'
-                : 'text-[--text-secondary] hover:text-[--text-primary] hover:bg-slate-100 dark:hover:bg-slate-800/60'
+                ? 'bg-emerald-500/10 text-emerald-400 font-medium border-l-2 border-emerald-400 pl-2 pr-3 rounded-l-none shadow-sm shadow-emerald-500/5'
+                : 'text-emerald-700/70 hover:text-emerald-50 hover:bg-emerald-500/5 px-3'
               }
             `}
           >
-            <item.icon className="w-5 h-5 shrink-0" />
+            <item.icon className="w-5 h-5 shrink-0 transition-transform duration-200 group-hover:scale-105" />
             
             {!collapsed && (
               <span className="truncate animate-[fadeIn_0.2s_ease-out]">
@@ -60,7 +61,7 @@ export const SidebarNav: React.FC = () => {
 
             {/* Tooltip on collapsed */}
             {collapsed && (
-              <span className="absolute left-full ml-2 px-2 py-1 bg-slate-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-30 shadow-md">
+              <span className="absolute left-full ml-2 px-2 py-1 bg-[#0a0f0b] text-emerald-300 text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-30 shadow-md border border-brand-900/40">
                 {item.label}
               </span>
             )}
@@ -78,7 +79,7 @@ export const SidebarNav: React.FC = () => {
         
         {!collapsed && (
           <div className="flex items-center gap-2 px-2 py-1">
-            <div className="w-8 h-8 rounded-full bg-brand-200 dark:bg-brand-900 flex items-center justify-center text-xs font-bold text-brand-700 dark:text-brand-300">
+            <div className="w-8 h-8 rounded-full bg-brand-900/60 border border-brand-700/40 flex items-center justify-center text-xs font-bold text-brand-300">
               U
             </div>
             <div className="text-left overflow-hidden">
@@ -90,7 +91,7 @@ export const SidebarNav: React.FC = () => {
 
         <button
           onClick={toggleCollapse}
-          className="p-1.5 rounded-lg text-[--text-secondary] hover:text-[--text-primary] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0"
+          className="p-1.5 rounded-lg text-[--text-secondary] hover:text-[--text-primary] hover:bg-white/5 transition-colors shrink-0"
           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}

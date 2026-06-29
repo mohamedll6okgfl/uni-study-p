@@ -1,33 +1,40 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..700;1,14..32,300..700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ──────────────────────────────────────────────────────────────────────────────
+   NORDIC FOREST / SAGE — Design Token Layer
+   All components consume these vars, so changing them here re-themes everything.
+   ────────────────────────────────────────────────────────────────────────────── */
+
 @layer base {
+  /* ── Light Mode (Soft Sage) ─────────────────────────────────────── */
   :root {
-    --bg-page:        #f8fafc; /* surface.50 */
+    --bg-page:        #f0f4f1;  /* very pale sage-green */
     --bg-card:        #ffffff;
-    --bg-sidebar:     #f1f5f9; /* surface.100 */
-    --border:         #e2e8f0; /* surface.200 */
-    --text-primary:   #0f172a; /* surface.900 */
-    --text-secondary: #64748b; /* surface.500 */
-    --text-muted:     #94a3b8; /* surface.400 */
-    --accent:         #6366f1; /* brand.500 */
-    --accent-hover:   #4f46e5; /* brand.600 */
+    --bg-sidebar:     #e8efe9;  /* slightly darker sage wash */
+    --border:         #cdddd0;  /* sage-green tinted border */
+    --text-primary:   #0d1f14;  /* deep forest ink */
+    --text-secondary: #4a6b52;  /* mid-tone sage */
+    --text-muted:     #7a9e83;  /* muted forest green */
+    --accent:         #10b981;  /* emerald-500 */
+    --accent-hover:   #059669;  /* emerald-600 */
     --transition:     150ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
+  /* ── Dark Mode — Nordic Forest Void (PRIMARY EXPERIENCE) ──────── */
   [data-theme="dark"] {
-    --bg-page:        #0f172a; /* surface.900 */
-    --bg-card:        #1e293b; /* surface.800 */
-    --bg-sidebar:     #020617; /* surface.950 */
-    --border:         #334155; /* surface.700 */
-    --text-primary:   #f8fafc; /* surface.50 */
-    --text-secondary: #94a3b8; /* surface.400 */
-    --text-muted:     #64748b; /* surface.500 */
-    --accent:         #818cf8; /* brand.400 */
-    --accent-hover:   #6366f1; /* brand.500 */
+    --bg-page:        #141a16;  /* Deep Forest Void */
+    --bg-card:        #1e2621;  /* Elevated Sage Forest */
+    --bg-sidebar:     #111712;  /* Deeper sidebar cavity */
+    --border:         rgba(52, 211, 153, 0.08); /* whisper emerald border */
+    --text-primary:   #f0fdf4;  /* emerald-50 — pure crisp white-green */
+    --text-secondary: #6ee7b7;  /* emerald-300 — soft glow text */
+    --text-muted:     #34d399;  /* emerald-400 — accent-tinted muted */
+    --accent:         #34d399;  /* Emerald Glow */
+    --accent-hover:   #10b981;  /* emerald-500 */
   }
 
   body {
@@ -40,10 +47,10 @@
   }
 }
 
-/* Custom Scrollbar */
+/* ── Custom Scrollbar — forest-tinted ──────────────────────────────── */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -51,36 +58,36 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border);
+  background: rgba(52, 211, 153, 0.18);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
+  background: rgba(52, 211, 153, 0.35);
 }
 
-/* Masonry columns for Scratchpad */
+/* ── Selection highlight ────────────────────────────────────────────── */
+::selection {
+  background: rgba(52, 211, 153, 0.25);
+  color: #f0fdf4;
+}
+
+/* ── Masonry grid for Scratchpad ────────────────────────────────────── */
 .note-grid {
   column-count: 1;
   column-gap: 1rem;
 }
 
 @media (min-width: 640px) {
-  .note-grid {
-    column-count: 2;
-  }
+  .note-grid { column-count: 2; }
 }
 
 @media (min-width: 1024px) {
-  .note-grid {
-    column-count: 3;
-  }
+  .note-grid { column-count: 3; }
 }
 
 @media (min-width: 1280px) {
-  .note-grid {
-    column-count: 4;
-  }
+  .note-grid { column-count: 4; }
 }
 
 .note-card {
@@ -88,17 +95,70 @@
   margin-bottom: 1rem;
 }
 
-/* Glassmorphism utility */
+/* ── Glassmorphism — Nordic Forest Edition ───────────────────────────── */
 .glass {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(240, 244, 241, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(205, 221, 208, 0.5);
 }
 
 [data-theme="dark"] .glass {
-  background: rgba(15, 23, 42, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(20, 26, 22, 0.80);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(52, 211, 153, 0.08);
+}
+
+/* ── Emerald glow pulse — for active Pomodoro, urgent countdowns ─────── */
+@keyframes emerald-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+  50%       { box-shadow: 0 0 0 6px rgba(52, 211, 153, 0.15); }
+}
+
+.glow-pulse {
+  animation: emerald-pulse 2.5s ease-in-out infinite;
+}
+
+/* ── Slide-up entrance (used by PomodoroWidget) ──────────────────────── */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── FadeIn entrance (used by views) ─────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Shimmer skeleton loader ─────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg,
+    rgba(52, 211, 153, 0.04) 25%,
+    rgba(52, 211, 153, 0.10) 50%,
+    rgba(52, 211, 153, 0.04) 75%
+  );
+  background-size: 400px 100%;
+  animation: shimmer 1.6s infinite linear;
+  border-radius: 0.5rem;
+}
+
+/* ── Utility: subtle emerald ambient glow on cards ───────────────────── */
+[data-theme="dark"] .shadow-card {
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(52, 211, 153, 0.05);
+}
+
+[data-theme="dark"] .shadow-card-hover {
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(52, 211, 153, 0.08),
+    0 0 20px rgba(52, 211, 153, 0.04);
 }

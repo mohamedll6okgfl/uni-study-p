@@ -17,46 +17,46 @@ export interface BadgeProps {
 const priorityMap: Record<Priority, { label: string; classes: string; dotClass: string }> = {
   low: {
     label: 'Low',
-    classes: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
-    dotClass: 'bg-slate-400',
+    classes: 'bg-slate-100 text-slate-600 dark:bg-white/5 dark:text-brand-300/70 dark:border dark:border-brand-900/20',
+    dotClass: 'bg-slate-400 dark:bg-brand-700',
   },
   medium: {
     label: 'Medium',
-    classes: 'bg-info-100 text-info-900 dark:bg-blue-900/40 dark:text-blue-300',
-    dotClass: 'bg-info-500',
+    classes: 'bg-blue-50 text-blue-700 dark:bg-blue-950/30 dark:text-blue-300 dark:border dark:border-blue-900/20',
+    dotClass: 'bg-blue-500',
   },
   high: {
     label: 'High',
-    classes: 'bg-warning-100 text-warning-900 dark:bg-yellow-900/40 dark:text-yellow-300',
-    dotClass: 'bg-warning-500',
+    classes: 'bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-300 dark:border dark:border-amber-900/20',
+    dotClass: 'bg-amber-500',
   },
   critical: {
     label: 'Critical',
-    classes: 'bg-danger-100 text-danger-900 dark:bg-red-900/40 dark:text-red-300',
-    dotClass: 'bg-danger-500',
+    classes: 'bg-red-50 text-red-700 dark:bg-red-950/30 dark:text-red-300 dark:border dark:border-red-900/20',
+    dotClass: 'bg-red-500',
   },
 };
 
 const statusMap: Record<Status, { label: string; classes: string; dotClass: string }> = {
   todo: {
     label: 'To Do',
-    classes: 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400',
-    dotClass: 'bg-slate-400',
+    classes: 'bg-slate-100 text-slate-500 dark:bg-white/5 dark:text-brand-300/60 dark:border dark:border-brand-900/20',
+    dotClass: 'bg-slate-400 dark:bg-brand-800',
   },
   in_progress: {
     label: 'In Progress',
-    classes: 'bg-brand-100 text-brand-700 dark:bg-indigo-900/40 dark:text-indigo-300',
+    classes: 'bg-brand-50 text-brand-700 dark:bg-brand-950/40 dark:text-brand-300 dark:border dark:border-brand-800/30',
     dotClass: 'bg-brand-500',
   },
   review: {
     label: 'Review',
-    classes: 'bg-warning-100 text-warning-950 dark:bg-yellow-950/30 dark:text-yellow-400',
-    dotClass: 'bg-warning-500',
+    classes: 'bg-amber-50 text-amber-800 dark:bg-amber-950/30 dark:text-amber-300 dark:border dark:border-amber-900/20',
+    dotClass: 'bg-amber-500',
   },
   done: {
     label: 'Done',
-    classes: 'bg-success-100 text-success-900 dark:bg-green-900/40 dark:text-green-300',
-    dotClass: 'bg-success-500',
+    classes: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300 dark:border dark:border-emerald-900/20',
+    dotClass: 'bg-emerald-500',
   },
 };
 

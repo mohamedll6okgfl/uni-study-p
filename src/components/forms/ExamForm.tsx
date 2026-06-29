@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { BookOpen } from 'lucide-react';
 import { usePlannerData } from '../../context/PlannerContext';
 import type { Exam } from '../../types';
 import { generateId } from '../../utils/generate';
@@ -27,39 +28,50 @@ export const ExamForm: React.FC<ExamFormProps> = ({ isOpen, onClose, examId }) =
   
   const [error, setError] = useState('');
 
-  const coursesList = Object.values(data.courses).filter(c => !c.isArchived);
+  // Memoize the courses list so its reference is stable across renders.
+  // This is CRITICAL: if coursesList were recomputed on every render (via Object.values),
+  // it would be a new array reference each time, causing the useEffect below to fire
+  // on every keystroke and reset all form fields — making inputs appear frozen.
+  const coursesList = useMemo(
+    () => Object.values(data.courses).filter(c => !c.isArchived),
+    [data.courses]
+  );
 
-  // Prefill if editing
+  // Prefill if editing, or reset when opening for a new item.
+  // We deliberately exclude `coursesList` from deps — it is only needed to
+  // pick the initial courseId on open, not to re-run whenever courses change.
   useEffect(() => {
-    if (isOpen) {
-      if (examId && data.exams[examId]) {
-        const e = data.exams[examId];
-        setTitle(e.title);
-        setCourseId(e.courseId);
-        setType(e.type);
-        setDate(e.date);
-        setStartTime(e.startTime);
-        setEndTime(e.endTime);
-        setLocation(e.location);
-        setWeight(e.weight);
-        setTopicsInput(e.topics.join(', '));
-        setNotes(e.notes);
-      } else {
-        // Reset form
-        setTitle('');
-        setCourseId(coursesList[0]?.id || '');
-        setType('midterm');
-        setDate(new Date().toISOString().slice(0, 10));
-        setStartTime('09:00');
-        setEndTime('11:00');
-        setLocation('');
-        setWeight(20);
-        setTopicsInput('');
-        setNotes('');
-      }
-      setError('');
+    if (!isOpen) return;
+
+    if (examId && data.exams[examId]) {
+      const e = data.exams[examId];
+      setTitle(e.title);
+      setCourseId(e.courseId);
+      setType(e.type);
+      setDate(e.date);
+      setStartTime(e.startTime);
+      setEndTime(e.endTime);
+      setLocation(e.location ?? '');
+      setWeight(e.weight ?? 20);
+      setTopicsInput(e.topics?.join(', ') ?? '');
+      setNotes(e.notes ?? '');
+    } else {
+      // Reset form — snapshot the first available courseId at open-time
+      const firstCourseId = Object.values(data.courses).find(c => !c.isArchived)?.id ?? '';
+      setTitle('');
+      setCourseId(firstCourseId);
+      setType('midterm');
+      setDate(new Date().toISOString().slice(0, 10));
+      setStartTime('09:00');
+      setEndTime('11:00');
+      setLocation('');
+      setWeight(20);
+      setTopicsInput('');
+      setNotes('');
     }
-  }, [isOpen, examId, data.exams, coursesList]);
+    setError('');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, examId]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -119,6 +131,9 @@ export const ExamForm: React.FC<ExamFormProps> = ({ isOpen, onClose, examId }) =
     onClose();
   };
 
+  // Guard: if no courses exist at all, show a friendly blocker instead of a broken form
+  const hasCourses = coursesList.length > 0;
+
   return (
     <Modal
       isOpen={isOpen}
@@ -127,16 +142,37 @@ export const ExamForm: React.FC<ExamFormProps> = ({ isOpen, onClose, examId }) =
       description="Record exams, locations, grade weights, and study topics."
       size="lg"
       footer={
-        <>
+        hasCourses ? (
+          <>
+            <Button variant="ghost" size="sm" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button variant="primary" size="sm" onClick={handleSubmit}>
+              {examId ? 'Save Changes' : 'Schedule Exam'}
+            </Button>
+          </>
+        ) : (
           <Button variant="ghost" size="sm" onClick={onClose}>
-            Cancel
+            Close
           </Button>
-          <Button variant="primary" size="sm" onClick={handleSubmit}>
-            {examId ? 'Save Changes' : 'Schedule Exam'}
-          </Button>
-        </>
+        )
       }
     >
+      {/* No-course empty state: renders instead of the broken form */}
+      {!hasCourses ? (
+        <div className="flex flex-col items-center gap-4 py-8 text-center">
+          <div className="w-14 h-14 rounded-2xl bg-brand-50 dark:bg-brand-950/30 flex items-center justify-center">
+            <BookOpen className="w-7 h-7 text-brand-500" />
+          </div>
+          <div>
+            <p className="text-sm font-bold text-[--text-primary] mb-1">No courses yet!</p>
+            <p className="text-xs text-[--text-secondary] max-w-xs">
+              You need to create at least one course before you can schedule exams.
+              Head over to the <strong>Courses</strong> page to get started.
+            </p>
+          </div>
+        </div>
+      ) : (
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
           <div className="p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 rounded-xl text-xs font-semibold">
@@ -156,7 +192,7 @@ export const ExamForm: React.FC<ExamFormProps> = ({ isOpen, onClose, examId }) =
               onChange={e => setTitle(e.target.value)}
               placeholder="e.g. Midterm 2, Final Exam"
               maxLength={100}
-              className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm font-medium"
+              className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-1 focus:ring-brand-400/40 focus:border-brand-400 transition-all duration-200 text-sm font-medium"
               required
             />
           </div>
@@ -174,7 +210,7 @@ export const ExamForm: React.FC<ExamFormProps> = ({ isOpen, onClose, examId }) =
               <select
                 value={courseId}
                 onChange={e => setCourseId(e.target.value)}
-                className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm cursor-pointer"
+                className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-1 focus:ring-brand-400/40 focus:border-brand-400 transition-all duration-200 text-sm cursor-pointer"
                 required
               >
                 {coursesList.map(c => (
@@ -194,7 +230,7 @@ export const ExamForm: React.FC<ExamFormProps> = ({ isOpen, onClose, examId }) =
             <select
               value={type}
               onChange={e => setType(e.target.value as Exam['type'])}
-              className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm cursor-pointer"
+              className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-1 focus:ring-brand-400/40 focus:border-brand-400 transition-all duration-200 text-sm cursor-pointer"
             >
               <option value="midterm">Midterm</option>
               <option value="final">Final</option>
@@ -215,7 +251,7 @@ export const ExamForm: React.FC<ExamFormProps> = ({ isOpen, onClose, examId }) =
               onChange={e => setWeight(Number(e.target.value))}
               min={0}
               max={100}
-              className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm"
+              className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-1 focus:ring-brand-400/40 focus:border-brand-400 transition-all duration-200 text-sm"
             />
           </div>
 
@@ -228,7 +264,7 @@ export const ExamForm: React.FC<ExamFormProps> = ({ isOpen, onClose, examId }) =
               type="date"
               value={date}
               onChange={e => setDate(e.target.value)}
-              className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm cursor-pointer"
+              className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-1 focus:ring-brand-400/40 focus:border-brand-400 transition-all duration-200 text-sm cursor-pointer"
               required
             />
           </div>
@@ -243,7 +279,7 @@ export const ExamForm: React.FC<ExamFormProps> = ({ isOpen, onClose, examId }) =
               value={location}
               onChange={e => setLocation(e.target.value)}
               placeholder="e.g. Hall B, Seat 12"
-              className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm"
+              className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-1 focus:ring-brand-400/40 focus:border-brand-400 transition-all duration-200 text-sm"
             />
           </div>
 
@@ -256,7 +292,7 @@ export const ExamForm: React.FC<ExamFormProps> = ({ isOpen, onClose, examId }) =
               type="time"
               value={startTime}
               onChange={e => setStartTime(e.target.value)}
-              className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm cursor-pointer"
+              className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-1 focus:ring-brand-400/40 focus:border-brand-400 transition-all duration-200 text-sm cursor-pointer"
               required
             />
           </div>
@@ -270,7 +306,7 @@ export const ExamForm: React.FC<ExamFormProps> = ({ isOpen, onClose, examId }) =
               type="time"
               value={endTime}
               onChange={e => setEndTime(e.target.value)}
-              className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm cursor-pointer"
+              className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-1 focus:ring-brand-400/40 focus:border-brand-400 transition-all duration-200 text-sm cursor-pointer"
               required
             />
           </div>
@@ -286,7 +322,7 @@ export const ExamForm: React.FC<ExamFormProps> = ({ isOpen, onClose, examId }) =
             value={topicsInput}
             onChange={e => setTopicsInput(e.target.value)}
             placeholder="e.g. Limits, Derivatives, Taylor Series"
-            className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm"
+            className="w-full h-10 px-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-1 focus:ring-brand-400/40 focus:border-brand-400 transition-all duration-200 text-sm"
           />
         </div>
 
@@ -300,10 +336,11 @@ export const ExamForm: React.FC<ExamFormProps> = ({ isOpen, onClose, examId }) =
             onChange={e => setNotes(e.target.value)}
             placeholder="Outline study goals, resources, or formulas to review..."
             rows={3}
-            className="w-full p-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm resize-none"
+            className="w-full p-3 rounded-lg border border-[--border] bg-[--bg-page] text-[--text-primary] focus:outline-none focus:ring-1 focus:ring-brand-400/40 focus:border-brand-400 transition-all duration-200 text-sm resize-none"
           />
         </div>
       </form>
+      )}
     </Modal>
   );
 };
